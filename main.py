@@ -1,22 +1,26 @@
 import pygame
+import time
 import create_lab as cl
 import drawlab_v1 as l1
 import drawlab_v2 as l2
 from controll import controll_keys
 from random import random, shuffle
+from distances import calc_sit
 
 def run(screen, labyrinthe):
     version = 2
     rob, pol = (0,0), (len(labyrinthe[0])-1, len(labyrinthe)-1)
     running = True
+    situation = calc_sit(labyrinthe, rob, pol)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-        rob, pol, pause, version = controll_keys(labyrinthe, rob, pol, version) 
-        if version == 2: l2.drawwhatever(screen, labyrinthe, rob, pol, pause)
-        else: l1.drawwhatever(screen, labyrinthe, rob, pol, pause)
+        rob, pol, pause, version, situation = controll_keys(labyrinthe, rob, pol, version, situation) 
+        if version == 2: l2.drawwhatever(screen, labyrinthe, rob, pol, situation)
+        else: l1.drawwhatever(screen, labyrinthe, rob, pol)
         pygame.display.update()
+        if pause: time.sleep(0.2)
     pygame.quit()
 
 def init():

@@ -1,5 +1,4 @@
 import pygame
-import time
 from random import random, shuffle
 from controll import controll_keys
 
@@ -25,12 +24,11 @@ def drawpeople(screen, labyrinthe, x,y, offset, couleur):
     tailleL = 1000/(longueur+1)
     pygame.draw.ellipse(screen, color=couleur, rect=((offset+tailleL/8) + tailleL*x, (offset+tailleH/8) + tailleH*y, tailleL*0.65, tailleH*0.65))
 
-def drawwhatever (screen, labyrinthe, rob, pol, pause):
+def drawwhatever (screen, labyrinthe, rob, pol):
     offset = 100
     screen.fill((200,200,200))
 
     drawgrille(screen, labyrinthe, offset)
     drawpeople(screen, labyrinthe, rob[0], rob[1], offset, "black") # robber
     drawpeople(screen, labyrinthe, pol[0], pol[1], offset, "blue") # police
-    if pause: time.sleep(0.2)
     return rob, pol
