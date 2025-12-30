@@ -36,10 +36,25 @@ def distances_labyrinthe(lab, source):
 
     return dist
 
-def calc_sit(labyrinthe, robber, police):
-    dist_R = distances_labyrinthe(labyrinthe, robber)
-    dist_P = distances_labyrinthe(labyrinthe, police)
+def min_mat(l_mat):
+    mat = []
+    for y in range(len(l_mat[0])):
+        mat.append([])
+        for x in range(len(l_mat[0][0])):
+            m = 1000000
+            for i in range(len(l_mat)):
+                if l_mat[i][y][x] < m: m = l_mat[i][y][x]
+            mat[y].append(m)
+    return mat
+            
 
+def calc_sit(labyrinthe, robber, policemen):
+    dist_R = distances_labyrinthe(labyrinthe, robber)
+    dist_P = []
+    for p in policemen:
+        dist_P.append(distances_labyrinthe(labyrinthe, p))
+
+    dist_P = min_mat(dist_P)
     for y in range(len(labyrinthe)):
         for x in range(len(labyrinthe[0])):
             if dist_R[y][x] >= 0 and dist_R[y][x] < dist_P[y][x]: dist_R[y][x] = True

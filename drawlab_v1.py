@@ -30,5 +30,5 @@ def drawwhatever (screen, labyrinthe, rob, pol):
 
     drawgrille(screen, labyrinthe, offset)
     drawpeople(screen, labyrinthe, rob[0], rob[1], offset, "black") # robber
-    drawpeople(screen, labyrinthe, pol[0], pol[1], offset, "blue") # police
+    for p in pol: drawpeople(screen, labyrinthe, p[0], p[1], offset, "blue") # police
     return rob, pol
