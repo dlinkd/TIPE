@@ -1,9 +1,10 @@
 import pygame
 import time
+import reseau_neurone
 from random import randint
 from distances import calc_sit
 
-def controll_keys(tour, labyrinthe, robber, policemen, version, situation, rand):
+def controll_keys(tour, labyrinthe, robber, policemen, version, situation, rand, ai, model):
     keys={"z": pygame.K_z, "q": pygame.K_q, "s": pygame.K_s, "d": pygame.K_d, 
     "e": pygame.K_e, "f": pygame.K_f,  "space": pygame.K_SPACE,
     "up": pygame.K_UP, "down": pygame.K_DOWN, "left": pygame.K_LEFT, "right": pygame.K_RIGHT}
@@ -11,9 +12,27 @@ def controll_keys(tour, labyrinthe, robber, policemen, version, situation, rand)
     key_p = pygame.key.get_pressed()
 
     r_move = [False] * 5
-    if rand:
-        i = randint(0, 4)
-        r_move[i] = True
+
+    if ai:
+        # creer donnees_entrees
+        with torch.no_grad():
+        predi = (model(donnees_entrees))
+        lmv = [] # liste move prio
+        while len(lmv) < 5:
+            max = (-1) * sys.maxint - 1
+            max_id = -1
+            for x in range(5):
+                if x not in lmv:
+                    if predi[x] > max: 
+                        max = predi[x]
+                        max_id = x
+            lmv.append(max_id)
+        
+    else if rand:
+        lmv = []
+        while len(lmv) < 5:
+            i = randint(0,4)
+            if not i in lmv: lmv.append(i)
 
     x,y = 0,0
     if tour == 0: x,y = robber
@@ -22,8 +41,13 @@ def controll_keys(tour, labyrinthe, robber, policemen, version, situation, rand)
     hauteur, longueur = len(labyrinthe), len(labyrinthe[0])
     v = version
     played = False
+    once = -1
+    while ((ai or rand) and not played) && once != -1:
+        once+=1
 
-    if rand or True in key_p:
+        r_move[lmv[once]] = True
+        if once >= 1: r_move[lmv[once -1]] = False
+        
         if key_p[keys["e"]]: v = 2
         elif key_p[keys["f"]]: v = 1
 
