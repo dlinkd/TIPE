@@ -3,11 +3,20 @@ import time
 import create_lab as cl
 import drawlab_v1 as l1
 import drawlab_v2 as l2
+import reseau_neurone
 from controll import controll_keys
 from random import random, shuffle
 from distances import calc_sit
 
 def run(screen, labyrinthe, nbP, rand, ai):
+
+    if ai:
+        model_pol = Model()
+        model_vol = Model()
+        model_pol.load_state_dict(torch.load('nn_pol.pt'))
+        model_vol.load_state_dict(torch.load('nn_vol.pt'))
+    else: model = None
+    
     version = 2
     rob = (0,0)
     pol = [(len(labyrinthe[0])-1, len(labyrinthe)-1)] * nbP
