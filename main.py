@@ -15,7 +15,9 @@ def run(screen, labyrinthe, nbP, rand, ai):
         model_vol = Model()
         model_pol.load_state_dict(torch.load('nn_pol.pt'))
         model_vol.load_state_dict(torch.load('nn_vol.pt'))
-    else: model = None
+    else: 
+        model_pol = None
+        model_vol = None
     
     version = 2
     rob = (0,0)
@@ -28,7 +30,8 @@ def run(screen, labyrinthe, nbP, rand, ai):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-        tour, rob, pol, pause, version, situation = controll_keys(tour, labyrinthe, rob, pol, version, situation, rand, ai) 
+        model = model_vol if tour == 0 else model_pol
+        tour, rob, pol, pause, version, situation = controll_keys(tour, labyrinthe, rob, pol, version, situation, rand, ai, model) 
         
         if not ai:
             if version == 2: l2.drawwhatever(screen, labyrinthe, rob, pol, situation)
