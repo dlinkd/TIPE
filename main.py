@@ -7,7 +7,7 @@ from controll import controll_keys
 from random import random, shuffle
 from distances import calc_sit
 
-def run(screen, labyrinthe, nbP, rand):
+def run(screen, labyrinthe, nbP, rand, ai):
     version = 2
     rob = (0,0)
     pol = [(len(labyrinthe[0])-1, len(labyrinthe)-1)] * nbP
@@ -26,13 +26,21 @@ def run(screen, labyrinthe, nbP, rand):
     pygame.quit()
 
 def init():
-    rand = input("Mode de jeu manuel ou automatique? (m/a)\n--> ") == "a"
-    mode = int(input("Paramètres de génération?\n1 -> Classique\n2 -> Choix de la taille et des policiers\n3 -> Manuel\n--> "))
-    hauteur = 14 if mode==1 else int(input("Hauteur ?\n --> "))
-    longueur = 20 if mode==1 else int(input("Longueur ?\n -->"))
-    nbP = 2 if mode==1 else int(input("Nombre de policiers ?\n -->"))
-    probamur = 0.85 if mode<3 else float(input("Pourcentage mur ? (entre 0.0 et 1.0)\n--> "))
-    parfait = True if mode<3 else input("Labyrinthe parfait (o/n)\n--> ") == "o"
+    ai = input("Version ia ? (oui: o)") == "o"
+    if ai:
+        hauteur = 10
+        longueur = 10
+        probamur = 0.8
+        parfait = True
+        nbP = 2
+    else:
+        rand = input("Mode de jeu manuel ou automatique? (m/a)\n--> ") == "a"
+        mode = int(input("Paramètres de génération?\n1 -> Classique\n2 -> Choix de la taille et des policiers\n3 -> Manuel\n--> "))
+        hauteur = 14 if mode==1 else int(input("Hauteur ?\n --> "))
+        longueur = 20 if mode==1 else int(input("Longueur ?\n -->"))
+        nbP = 2 if mode==1 else int(input("Nombre de policiers ?\n -->"))
+        probamur = 0.85 if mode<3 else float(input("Pourcentage mur ? (entre 0.0 et 1.0)\n--> "))
+        parfait = True if mode<3 else input("Labyrinthe parfait (o/n)\n--> ") == "o"
     screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
     # EST: 0, SUD: 1
@@ -45,6 +53,6 @@ def init():
                 labyrinthe[y][x].append((y==hauteur-1 and i==1) or (x==longueur-1 and i==0) or (random()<probamur))
     
     if parfait: labyrinthe = cl.rendre_connexe(labyrinthe)
-    run(screen, labyrinthe, nbP, rand)
+    run(screen, labyrinthe, nbP, rand, ai)
 
 init()
