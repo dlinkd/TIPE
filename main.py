@@ -15,15 +15,18 @@ def run(screen, labyrinthe, nbP, rand, ai):
     running = True
     situation = calc_sit(labyrinthe, rob, pol)
     while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-        tour, rob, pol, pause, version, situation = controll_keys(tour, labyrinthe, rob, pol, version, situation, rand) 
-        if version == 2: l2.drawwhatever(screen, labyrinthe, rob, pol, situation)
-        else: l1.drawwhatever(screen, labyrinthe, rob, pol)
-        pygame.display.update()
-        if pause: time.sleep(0.2)
-    pygame.quit()
+        if not ai:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+        tour, rob, pol, pause, version, situation = controll_keys(tour, labyrinthe, rob, pol, version, situation, rand, ai) 
+        
+        if not ai:
+            if version == 2: l2.drawwhatever(screen, labyrinthe, rob, pol, situation)
+            else: l1.drawwhatever(screen, labyrinthe, rob, pol)
+            pygame.display.update()
+            if pause: time.sleep(0.2)
+    if not ai: pygame.quit()        
 
 def init():
     ai = input("Version ia ? (oui: o)") == "o"
@@ -33,6 +36,7 @@ def init():
         probamur = 0.8
         parfait = True
         nbP = 2
+        screen = None
     else:
         rand = input("Mode de jeu manuel ou automatique? (m/a)\n--> ") == "a"
         mode = int(input("Paramètres de génération?\n1 -> Classique\n2 -> Choix de la taille et des policiers\n3 -> Manuel\n--> "))
@@ -41,7 +45,7 @@ def init():
         nbP = 2 if mode==1 else int(input("Nombre de policiers ?\n -->"))
         probamur = 0.85 if mode<3 else float(input("Pourcentage mur ? (entre 0.0 et 1.0)\n--> "))
         parfait = True if mode<3 else input("Labyrinthe parfait (o/n)\n--> ") == "o"
-    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
     # EST: 0, SUD: 1
     labyrinthe = []
