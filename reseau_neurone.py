@@ -13,7 +13,7 @@ class Model(nn.Module):
   # Hidden Layer1  -->
   # H2 --> H3 --> H4 --> (on essaiera d'aller à 10 mais on verra plus tard)
   # output (5 options de déplacement)
-  def __init__(self, in_features=206, h1=200, h2=200,h3=200, h4=200, out_features=5):
+  def __init__(self, in_features=67, h1=200, h2=200,h3=200, h4=200, out_features=5):
     super().__init__() # instantiate our nn.Module
     self.fc1 = nn.Linear(in_features, h1)
     self.fc2 = nn.Linear(h1, h2)
