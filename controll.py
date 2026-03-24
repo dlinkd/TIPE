@@ -4,19 +4,36 @@ import reseau_neurone
 from random import randint
 from distances import calc_sit
 
-def controll_keys(tour, labyrinthe, robber, policemen, version, situation, rand, ai, model):
+def creer_input_data(lab, ra, v, pol):
+    # Pour 2 policiers uniquement
+    converted = []
+    n,m = len(lab), len(lab[0])
+    p1 = pol[0]
+    p2 = pol[1]
+    for i in range(n):
+        for j in range(m):
+            converted.append((0 if lab[i][j][0] or j == m-1 else 1) 
+                            + ((0 if lab[i][j][1] or u == n-1 else 2))
+                            + ((0 if (i,j) == v else 4))
+                            + ((0 if (i,j) == p1 else 8))
+                            + ((0 if (i,j) == p2 else 16))
+                            + ((0 if ra[i][j] else 32)))
+    return converted
+
+def controll_keys(tour, lab, v, pol, version, ra, rand, ai, model):
     keys={"z": pygame.K_z, "q": pygame.K_q, "s": pygame.K_s, "d": pygame.K_d, 
     "e": pygame.K_e, "f": pygame.K_f,  "space": pygame.K_SPACE,
     "up": pygame.K_UP, "down": pygame.K_DOWN, "left": pygame.K_LEFT, "right": pygame.K_RIGHT}
     
     key_p = pygame.key.get_pressed()
-
     r_move = [False] * 5
 
     if ai:
-        # creer donnees_entrees
+        current_data = creer_input_data(lab, ra, v, pol)
+        current_data.append(tour)
+        # IL RESTE PEUT-ËTRE À CONVERTIR LA LISTE EN TORSEUR
         with torch.no_grad():
-        predi = (model(donnees_entrees))
+        predi = (model(currentdata))
         lmv = [] # liste move prio
         while len(lmv) < 5:
             max = (-1) * sys.maxint - 1
@@ -35,10 +52,10 @@ def controll_keys(tour, labyrinthe, robber, policemen, version, situation, rand,
             if not i in lmv: lmv.append(i)
 
     x,y = 0,0
-    if tour == 0: x,y = robber
-    else: x,y = policemen[tour - 1]
+    if tour == 0: x,y = v
+    else: x,y = pol[tour - 1]
 
-    hauteur, longueur = len(labyrinthe), len(labyrinthe[0])
+    hauteur, longueur = len(lab), len(lab[0])
     v = version
     played = False
     once = -1
@@ -51,23 +68,23 @@ def controll_keys(tour, labyrinthe, robber, policemen, version, situation, rand,
         if key_p[keys["e"]]: v = 2
         elif key_p[keys["f"]]: v = 1
 
-        if (key_p[keys["z"]] or key_p[keys["up"]] or r_move[0]) and y>0 and not labyrinthe[y-1][x][1]:
+        if (key_p[keys["z"]] or key_p[keys["up"]] or r_move[0]) and y>0 and not lab[y-1][x][1]:
             y-=1
             played = True
-        elif (key_p[keys["q"]] or key_p[keys["left"]] or r_move[1]) and x>0 and not labyrinthe[y][x-1][0]: 
+        elif (key_p[keys["q"]] or key_p[keys["left"]] or r_move[1]) and x>0 and not lab[y][x-1][0]: 
             x-=1
             played = True
-        elif (key_p[keys["s"]] or key_p[keys["down"]] or r_move[2]) and y<hauteur-1 and not labyrinthe[y][x][1]: 
+        elif (key_p[keys["s"]] or key_p[keys["down"]] or r_move[2]) and y<hauteur-1 and not lab[y][x][1]: 
             y+=1
             played = True
-        elif (key_p[keys["d"]] or key_p[keys["right"]] or r_move[3]) and x<longueur-1 and not labyrinthe[y][x][0]: 
+        elif (key_p[keys["d"]] or key_p[keys["right"]] or r_move[3]) and x<longueur-1 and not lab[y][x][0]: 
             x+=1
             played = True
         elif key_p[keys["space"]] or r_move[4]: played = True
 
-        if tour == 0: robber = (x,y)
-        else: policemen[tour-1] = (x,y)
-        situation = calc_sit(labyrinthe, robber, policemen)
+        if tour == 0: v = (x,y)
+        else: pol[tour-1] = (x,y)
+        ra = calc_sit(lab, v, pol)
 
-    if played: tour = (tour+1) % (len(policemen)+1)
-    return tour, robber, policemen, True in key_p, v, situation
+    if played: tour = (tour+1) % (len(pol)+1)
+    return tour, v, pol, True in key_p, v, ra
