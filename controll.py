@@ -28,6 +28,7 @@ def controll_keys(tour, lab, v, pol, version, ra, rand, ai, model):
     key_p = pygame.key.get_pressed()
     r_move = [False] * 5
 
+    current_data = None
     if ai:
         current_data = creer_input_data(lab, ra, v, pol)
         current_data.append(tour)
@@ -44,14 +45,12 @@ def controll_keys(tour, lab, v, pol, version, ra, rand, ai, model):
                         max = predi[x]
                         max_id = x
             lmv.append(max_id)
-        couple = (current_data, predi)
     else if rand:
         lmv = []
         while len(lmv) < 5:
             i = randint(0,4)
             if not i in lmv: lmv.append(i)
 
-    if not ai: couple = (None, None)
     x,y = 0,0
     if tour == 0: x,y = v
     else: x,y = pol[tour - 1]
@@ -60,6 +59,8 @@ def controll_keys(tour, lab, v, pol, version, ra, rand, ai, model):
     v = version
     played = False
     once = -1
+    
+    coup_choisi = None
     while ((ai or rand) and not played) && once != -1:
         once+=1
 
@@ -87,5 +88,9 @@ def controll_keys(tour, lab, v, pol, version, ra, rand, ai, model):
         else: pol[tour-1] = (x,y)
         ra = calc_sit(lab, v, pol)
 
+        if played and ai:
+            coup_choisi = [0,0,0,0,0]
+            coup_choisi[r_move[lmv[once]]] = 10
+
     if played: tour = (tour+1) % (len(pol)+1)
-    return tour, v, pol, True in key_p, v, ra, couple
+    return tour, v, pol, True in key_p, v, ra, (current_data, coup_choisi)
