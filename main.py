@@ -11,34 +11,47 @@ from distances import calc_sit
 def run(screen, labyrinthe, nbP, rand, ai):
 
     if ai:
-        model_pol = Model()
-        model_vol = Model()
-        model_pol.load_state_dict(torch.load('nn_pol.pt'))
-        model_vol.load_state_dict(torch.load('nn_vol.pt'))
+        model = Model()
+        model.load_state_dict(torch.load('nn.pt'))
+        game_data = [[[], [], []], [[], [], []]]
     else: 
-        model_pol = None
-        model_vol = None
+        model = None
     
     version = 2
     rob = (0,0)
     pol = [(len(labyrinthe[0])-1, len(labyrinthe)-1)] * nbP
     tour = 0
     running = True
-    situation = calc_sit(labyrinthe, rob, pol)
+    nb_tour = 0
+    situation = calc_sit(labyrinthe, rob, pol) # calcul du rayon d'action
     while running:
         if not ai:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-        model = model_vol if tour == 0 else model_pol
-        tour, rob, pol, pause, version, situation = controll_keys(tour, labyrinthe, rob, pol, version, situation, rand, ai, model) 
-        
+
+        tour, rob, pol, pause, version, situation, couple = controll_keys(tour, labyrinthe, rob, pol, version, situation, rand, ai, model) 
+        # couple correspond à la donnée: (input data, output data) de l'ia
+        if ai: 
+            if tour == 2: nb_tour+=1
+            q,r = couple
+            game_data[0][tour].append(q)
+            game_data[1][tour].append(r)
+            if nb_tour>500 or rob in pol:
+                running = False
+
         if not ai:
             if version == 2: l2.drawwhatever(screen, labyrinthe, rob, pol, situation)
             else: l1.drawwhatever(screen, labyrinthe, rob, pol)
             pygame.display.update()
             if pause: time.sleep(0.2)
-    if not ai: pygame.quit()        
+    if not ai: pygame.quit()
+
+    if ai:
+        
+        if nb_tour > 500:
+            model.feed(game_data[0][0], game_data)
+            
 
 def init():
     ai = input("Version ia ? (oui: o)") == "o"
