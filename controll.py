@@ -34,7 +34,7 @@ def controll_keys(tour, lab, v, pol, version, ra, rand, ai, model):
         current_data.append(tour)
         # IL RESTE PEUT-ËTRE À CONVERTIR LA LISTE EN TORSEUR
         with torch.no_grad():
-        predi = (model(currentdata))
+            predi = (model(currentdata))
         lmv = [] # liste move prio
         while len(lmv) < 5:
             max = (-1) * sys.maxint - 1
