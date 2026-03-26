@@ -65,7 +65,7 @@ def controll_keys(tour, lab, v, pol, version, ra, rand, ai, model):
     once = -1
     
     coup_choisi = None
-    while ((ai or rand) and not played) && once != -1:
+    while ((ai or rand) and not played) and once != -1:
         once+=1
 
         r_move[lmv[once]] = True
