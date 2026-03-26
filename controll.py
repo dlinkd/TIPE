@@ -49,7 +49,7 @@ def controll_keys(tour, lab, v, pol, version, ra, rand, ai, model):
                         max = predi[x]
                         max_id = x
             lmv.append(max_id)
-    else if rand:
+    elif rand:
         lmv = []
         while len(lmv) < 5:
             i = randint(0,4)
