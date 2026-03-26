@@ -89,8 +89,7 @@ def controll_keys(tour, lab, v, pol, version, ra, rand, ai, model):
         ra = calc_sit(lab, v, pol)
 
         if played and ai:
-            coup_choisi = [0,0,0,0,0]
-            coup_choisi[r_move[lmv[once]]] = 10
+            coup_choisi = r_move[lmv[once]]
 
     if played: tour = (tour+1) % (len(pol)+1)
     return tour, v, pol, True in key_p, v, ra, (current_data, coup_choisi)
