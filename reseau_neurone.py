@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
+from sklearn.model_selection import train_test_split
      
 
 # Create a Model Class that inherits nn.Module
@@ -43,7 +43,8 @@ model = Model()
 
      def feed(X,y):
           X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=41) #divise entre les données qu'on va utiliser pour entrainer et celle qu'on va utiliser pour vérifier que l'entrainement donne de bons résultat
-          
+          X_train = torch.FloatTensor(X_train)
+          y_train = torch.FloatTensor(y_train)
           # Set the criterion of model to measure the error, how far off the predictions are from the data
           criterion = nn.CrossEntropyLoss()
           # Choose Adam Optimizer, lr = learning rate (if error doesn't go down after a bunch of iterations (epochs), lower our learning rate)
@@ -72,21 +73,4 @@ model = Model()
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-
-
-#Donner une prédiction à partir d'une entrée
-donnees_entrees = torch.tensor([contenu])
-
-
-# Save our NN Model
-torch.save(model.state_dict(), 'my_really_awesome_iris_model.pt')
-     
-
-# Load the Saved Model
-new_model = Model()
-new_model.load_state_dict(torch.load('my_really_awesome_iris_model.pt'))
-
-# Make sure it loaded correctly
-new_model.eval()
-     
 
