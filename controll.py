@@ -44,13 +44,14 @@ def controll_keys(tour, lab, v, pol, version, ra, rand, ai, model):
                         max = predi[x]
                         max_id = x
             lmv.append(max_id)
-        
+        couple = (current_data, predi)
     else if rand:
         lmv = []
         while len(lmv) < 5:
             i = randint(0,4)
             if not i in lmv: lmv.append(i)
 
+    if not ai: couple = (None, None)
     x,y = 0,0
     if tour == 0: x,y = v
     else: x,y = pol[tour - 1]
@@ -87,4 +88,4 @@ def controll_keys(tour, lab, v, pol, version, ra, rand, ai, model):
         ra = calc_sit(lab, v, pol)
 
     if played: tour = (tour+1) % (len(pol)+1)
-    return tour, v, pol, True in key_p, v, ra
+    return tour, v, pol, True in key_p, v, ra, couple
