@@ -1,5 +1,7 @@
 import pygame
+import numpy
 import time
+import torch
 import create_lab as cl
 import drawlab_v1 as l1
 import drawlab_v2 as l2
@@ -48,9 +50,17 @@ def run(screen, labyrinthe, nbP, rand, ai):
     if not ai: pygame.quit()
 
     if ai:
+        print("Ai's game is over")
         
         if nb_tour > 500:
-            model.feed(game_data[0][0], game_data)
+            print("Rob won")
+            model.feed(Numpy.array(game_data[0][0]), Numpy.array(game_data[1][0]))
+        else:
+            print("Cop won")
+            model.feed(Numpy.array(game_data[0][1]), Numpy.array(game_data[1][1]))
+            model.feed(Numpy.array(game_data[0][2]), Numpy.array(game_data[1][2]))
+
+        torch.save(model.state_dict(), 'nn.pt')
             
 
 def init():
