@@ -1,5 +1,7 @@
 import pygame
 import time
+import torch
+import numpy
 import reseau_neurone
 from random import randint
 from distances import calc_sit
@@ -33,8 +35,10 @@ def controll_keys(tour, lab, v, pol, version, ra, rand, ai, model):
         current_data = creer_input_data(lab, ra, v, pol)
         current_data.append(tour)
         # IL RESTE PEUT-ËTRE À CONVERTIR LA LISTE EN TORSEUR
+        temp = Numpy.array(current_data)
+        temp = torch.IntTensor(temp)
         with torch.no_grad():
-            predi = (model(currentdata))
+            predi = (model(temp))
         lmv = [] # liste move prio
         while len(lmv) < 5:
             max = (-1) * sys.maxint - 1
